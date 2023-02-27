@@ -1,3 +1,3 @@
-module github.com/zapomnij/wpkg-init
+module github.com/OpenWPKG/wpkg-init
 
 go 1.19

@@ -19,6 +19,10 @@ func getError(errno syscall.Errno) string {
 }
 
 func main() {
+	if os.Getpid() != 1 {
+		os.Exit(1)
+	}
+
 	pid, err := C.fork()
 
 	if pid == -1 {
