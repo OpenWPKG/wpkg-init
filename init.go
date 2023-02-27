@@ -38,10 +38,17 @@ func main() {
 	} else if pid == 0 {
 		for _, err := os.Stat("/dev/null"); os.IsNotExist(err); {
 		}
-		devnull, e := os.OpenFile("/dev/null", os.O_WRONLY, 0666)
-		if e == nil {
-			os.Stdout = devnull
-			os.Stderr = devnull
+
+		C.close(0)
+		C.close(1)
+		C.close(2)
+		file, err := os.OpenFile(os.DevNull, os.O_WRONLY|os.O_APPEND, 0666)
+		if err == nil {
+			fd := file.Fd()
+			if fd == 0 {
+				C.dup(C.int(fd))
+				C.dup(C.int(fd))
+			}
 		}
 
 		cstr := C.CString("/lib/wpkg-init/wpkg")
