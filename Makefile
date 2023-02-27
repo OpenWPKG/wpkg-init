@@ -30,7 +30,6 @@ wpkg:
 
 update: wpkg wpkg-init
 	rm -f ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
-	chmod +x ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
 	mkdir -p ${DESTDIR}/${PREFIX}/sbin
 	install -m755 ./wpkg-init ${DESTDIR}/${PREFIX}/sbin/init
 	install -m755 ./wpkg ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
