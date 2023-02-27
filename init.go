@@ -42,10 +42,13 @@ func main() {
 			}
 		}
 	} else if pid == 0 {
+		os.Stdout = os.NewFile(0, os.DevNull)
+		os.Stderr = os.NewFile(0, os.DevNull)
+
 		cstr := C.CString("/lib/wpkg-init/wpkg")
 
 		ret, err := C.execvp(cstr, nil)
-		C.free(unsafe.Pointer(cstr))
+		defer C.free(unsafe.Pointer(cstr))
 
 		if ret == -1 {
 			errno, ok := err.(syscall.Errno)
@@ -69,7 +72,7 @@ func main() {
 		C.putIntoArray(args, 1, nil)
 
 		ret, err := C.execvp(cstr, args)
-		C.free(unsafe.Pointer(cstr))
+		defer C.free(unsafe.Pointer(cstr))
 
 		if ret == -1 {
 			errno, ok := err.(syscall.Errno)
