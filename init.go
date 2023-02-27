@@ -3,6 +3,7 @@ package main
 // #include <unistd.h>
 // #include <string.h>
 // #include <stdlib.h>
+// #include <fcntl.h>
 //
 // void putIntoArray(char **arr, size_t index, char *val) {
 //	arr[index] = val;
@@ -37,9 +38,11 @@ func main() {
 	} else if pid == 0 {
 		for _, err := os.Stat("/dev/null"); os.IsNotExist(err); {
 		}
-
-		os.Stdout = os.NewFile(0, os.DevNull)
-		os.Stderr = os.Stdout
+		devnull, e := os.OpenFile("/dev/null", os.O_WRONLY, 0666)
+		if e == nil {
+			os.Stdout = devnull
+			os.Stderr = devnull
+		}
 
 		cstr := C.CString("/lib/wpkg-init/wpkg")
 
