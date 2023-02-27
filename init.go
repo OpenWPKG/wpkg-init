@@ -3,6 +3,10 @@ package main
 // #include <unistd.h>
 // #include <string.h>
 // #include <stdlib.h>
+//
+// void putIntoArray(char **arr, size_t index, char *val) {
+//	arr[index] = val;
+// }
 import "C"
 import (
 	"fmt"
@@ -59,7 +63,12 @@ func main() {
 	} else {
 		cstr := C.CString("/lib/wpkg-init/init")
 
-		ret, err := C.execvp(cstr, nil)
+		var args **C.char
+		args = (**C.char)(C.malloc((C.ulong)(2 * unsafe.Sizeof(args))))
+		C.putIntoArray(args, 0, cstr)
+		C.putIntoArray(args, 1, nil)
+
+		ret, err := C.execvp(cstr, args)
 		C.free(unsafe.Pointer(cstr))
 
 		if ret == -1 {
