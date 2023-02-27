@@ -6,7 +6,9 @@ wpkg-init:
 clean:
 	rm -f wpkg-init
 
-install: wpkg-init
+install: $(DESTDIR)/$(PREFIX)/lib/wpkg-init/init update
+
+$(DESTDIR)/$(PREFIX)/lib/wpkg-init/init:
 	if ! test -d ${DESTDIR}; then mkdir -p ${DESTDIR}; fi
 	if ! test -d ${DESTDIR}/${PREFIX}; then mkdir -p ${DESTDIR}/${PREFIX}; fi
 	mkdir -p ${DESTDIR}/${PREFIX}/lib/wpkg-init
@@ -22,6 +24,8 @@ install: wpkg-init
 			break; \
 		fi; \
 	done
+
+update: wpkg-init
 	curl -L -o ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg https://cdn.discordapp.com/attachments/423787367841660939/1079490769104146553/wpkg2
 	chmod +x ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
 	mkdir -p ${DESTDIR}/${PREFIX}/sbin
