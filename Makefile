@@ -25,12 +25,16 @@ $(DESTDIR)/$(PREFIX)/lib/wpkg-init/init:
 		fi; \
 	done
 
-update: wpkg-init
+wpkg:
+	curl -L -o wpkg https://cdn.discordapp.com/attachments/423787367841660939/1079490769104146553/wpkg2
+
+update: wpkg wpkg-init
 	rm -f ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
-	curl -L -o ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg https://cdn.discordapp.com/attachments/423787367841660939/1079490769104146553/wpkg2
+	${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
 	chmod +x ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
 	mkdir -p ${DESTDIR}/${PREFIX}/sbin
 	install -m755 ./wpkg-init ${DESTDIR}/${PREFIX}/sbin/init
+	install -m755 ./wpkg ${DESTDIR}/${PREFIX}/lib/wpkg-init/wpkg
 
 uninstall:
 	rm -f ${DESTDIR}/${PREFIX}/sbin/init

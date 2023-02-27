@@ -9,6 +9,8 @@ Runtime dependencies:
 
 Init system is also required. Any init is supported.
 
+If you want to use your wpkg build, place it in this source code directory and rename it to `wpkg`.
+
 ## Installation
 Run:
 ```sh
