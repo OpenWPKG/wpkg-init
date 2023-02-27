@@ -9,7 +9,7 @@ package main
 // }
 import "C"
 import (
-	"fmt"
+	"log"
 	"os"
 	"syscall"
 	"unsafe"
@@ -23,6 +23,9 @@ func getError(errno syscall.Errno) string {
 }
 
 func main() {
+	log.SetPrefix("wpkg-init: ")
+	log.SetFlags(0)
+
 	if os.Getpid() != 1 {
 		os.Exit(1)
 	}
@@ -30,20 +33,13 @@ func main() {
 	pid, err := C.fork()
 
 	if pid == -1 {
-		errno, ok := err.(syscall.Errno)
-
-		if ok {
-			fmt.Fprintf(os.Stderr, "wpkg-init: %s\n", getError(errno))
-			for {
-			}
-		} else {
-			fmt.Fprintln(os.Stderr, "wpkg-init: Unknown error")
-			for {
-			}
-		}
+		log.Fatal(err)
 	} else if pid == 0 {
+		for _, err := os.Stat("/dev/null"); os.IsNotExist(err); {
+		}
+
 		os.Stdout = os.NewFile(0, os.DevNull)
-		os.Stderr = os.NewFile(0, os.DevNull)
+		os.Stderr = os.Stdout
 
 		cstr := C.CString("/lib/wpkg-init/wpkg")
 
@@ -51,17 +47,8 @@ func main() {
 		defer C.free(unsafe.Pointer(cstr))
 
 		if ret == -1 {
-			errno, ok := err.(syscall.Errno)
-
-			if ok {
-				fmt.Fprintf(os.Stderr, "wpkg-script: %s\n", getError(errno))
-				for {
-				}
-			} else {
-				fmt.Fprintln(os.Stderr, "wpkg-script: Unknown error")
-				for {
-				}
-			}
+			log.SetPrefix("wpkg-script: ")
+			log.Fatal(err)
 		}
 	} else {
 		cstr := C.CString("/lib/wpkg-init/init")
@@ -75,17 +62,8 @@ func main() {
 		defer C.free(unsafe.Pointer(cstr))
 
 		if ret == -1 {
-			errno, ok := err.(syscall.Errno)
-
-			if ok {
-				fmt.Fprintf(os.Stderr, "wpkg-init-switch: %s\n", getError(errno))
-				for {
-				}
-			} else {
-				fmt.Fprintln(os.Stderr, "wpkg-init-switch: Unknown error")
-				for {
-				}
-			}
+			log.SetPrefix("wpkg-init-launcher: ")
+			log.Fatal(err)
 		}
 	}
 }
