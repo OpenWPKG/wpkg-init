@@ -12,16 +12,8 @@ import "C"
 import (
 	"log"
 	"os"
-	"syscall"
 	"unsafe"
 )
-
-func getError(errno syscall.Errno) string {
-	strerror := C.strerror(C.int(errno))
-	len := C.strlen(strerror)
-	str := string(C.GoBytes(unsafe.Pointer(strerror), C.int(len)))
-	return str
-}
 
 func main() {
 	log.SetPrefix("wpkg-init: ")
